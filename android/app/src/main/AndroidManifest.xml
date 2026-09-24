@@ -1,4 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        INTERNET: allows the app to open network connections.
+        Required for: OSM tile downloads (map images), Overpass API (Phase 7),
+        OSRM routing (Phase 8). Without this in the main manifest, release builds
+        cannot reach the network and tiles show as grey squares.
+        Reference: https://developer.android.com/reference/android/Manifest.permission#INTERNET
+    -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="geo_tracker"
         android:name="${applicationName}"
