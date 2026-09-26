@@ -95,4 +95,51 @@ class LocationProvider extends ChangeNotifier {
       init();
     }
   }
+
+  // ── Test helper ─────────────────────────────────────────────────────────────
+  // @visibleForTesting: only FakeLocationProvider (in test/) should call this.
+  // Sets the internal state directly so tests can verify getter contracts
+  // without going through the real Geolocator platform channel.
+  @visibleForTesting
+  void setStateForTest({
+    required LocationStatus status,
+    LatLng? position,
+    double? accuracy,
+    LocationIssue? issue,
+  }) {
+    _status = status;
+    _currentPosition = position;
+    _accuracy = accuracy;
+    _issue = issue;
+    // Do NOT call notifyListeners() — tests check state synchronously.
+  }
+}
+
+// ── FakeLocationProvider ──────────────────────────────────────────────────────
+// Used in tests only. Overrides init() to drive state transitions without
+// requiring a real GPS or platform channel.
+// Keep this in the production file (not in test/) so it compiles with the
+// real provider and catches API-change errors at compile time.
+@visibleForTesting
+class FakeLocationProvider extends LocationProvider {
+  FakeLocationProvider({required this.issueToReturn});
+
+  // Set to null to simulate a successful GPS fix.
+  LocationIssue? issueToReturn;
+
+  @override
+  Future<void> init() async {
+    if (issueToReturn != null) {
+      setStateForTest(status: LocationStatus.error, issue: issueToReturn);
+    } else {
+      setStateForTest(
+        status: LocationStatus.success,
+        // Fake position: (1.0, 2.0) — clearly synthetic, not a real coordinate.
+        position: LatLng(1.0, 2.0),
+        accuracy: 10.0,
+        issue: null,
+      );
+    }
+    notifyListeners();
+  }
 }
