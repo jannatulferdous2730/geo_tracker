@@ -7,6 +7,16 @@
         Reference: https://developer.android.com/reference/android/Manifest.permission#INTERNET
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--
+        ACCESS_FINE_LOCATION: requests GPS-quality positioning (~3 m accuracy).
+        ACCESS_COARSE_LOCATION: required alongside FINE on Android 12+ for the
+        runtime permission dialog to be shown. When both are declared geolocator
+        uses FINE precision.
+        Neither grants background location — this app tracks only while in use.
+        Reference: https://developer.android.com/training/location/permissions
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:label="geo_tracker"
         android:name="${applicationName}"
